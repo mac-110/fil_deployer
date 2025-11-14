@@ -61,6 +61,12 @@ BACKEND_URL=http://localhost:8080
 FRONTEND_URL=http://localhost:8080
 ```
 
+**Was diese Secrets tun:**
+
+- **ENCRYPTION_SECRET**: Verschlüsselt Ihre GitLab- und Artifactory-Tokens in der `config/app_config.json` Datei. Wenn jemand Zugriff auf den Server bekommt und diese Datei öffnet, sieht er nur verschlüsselte Werte (z.B. `gAAAAABl...`) statt der echten Tokens. Ohne diesen Key können die Tokens nicht entschlüsselt werden.
+
+- **SESSION_SECRET**: Wird verwendet, um Login-Session-Cookies zu signieren und zu verschlüsseln. Wenn Sie sich einloggen, erhalten Sie einen Cookie, der Ihre Session enthält. Dieses Secret stellt sicher, dass niemand diesen Cookie fälschen oder manipulieren kann, um sich als anderer Benutzer auszugeben.
+
 **Important:** Always set custom `ENCRYPTION_SECRET` and `SESSION_SECRET` in production!
 
 ### 3. Configure Customers
@@ -491,7 +497,10 @@ Sensitive data (GitLab and Artifactory tokens) in `config/app_config.json` are a
 
 #### Encryption Key Configuration
 
-The encryption key is derived from a secret using PBKDF2:
+**Wozu dieser Key gebraucht wird:**
+Der `ENCRYPTION_SECRET` verschlüsselt Ihre GitLab- und Artifactory-Tokens in der `config/app_config.json` Datei. Das bedeutet: Wenn jemand Zugriff auf Ihren Server erhält und diese Datei öffnet, kann er die Tokens nicht lesen - er sieht nur verschlüsselte Werte wie `gAAAAABl...`. Nur mit dem richtigen `ENCRYPTION_SECRET` kann die Anwendung die Tokens entschlüsseln und verwenden.
+
+**Technisch:** Der Encryption-Key wird aus einem Secret mittels PBKDF2 abgeleitet:
 
 ```python
 Secret → PBKDF2-HMAC-SHA256 (100k iterations) → Fernet Key
@@ -547,9 +556,16 @@ To rotate encryption keys:
 
 ### Authentication
 
-- Session-based authentication with secure cookies
-- Password hashing with secure algorithms
-- Admin-only access to sensitive operations
+**Session-basierte Authentifizierung:**
+
+Die Anwendung verwendet Session-basierte Authentifizierung mit sicheren Cookies:
+
+- **Login**: Wenn Sie sich einloggen, wird ein Session-Cookie erstellt
+- **SESSION_SECRET**: Dieser Cookie wird mit dem `SESSION_SECRET` signiert und verschlüsselt
+  - **Zweck**: Verhindert, dass jemand den Cookie fälschen oder manipulieren kann
+  - **Beispiel**: Ohne diese Signierung könnte ein Angreifer seinen Cookie ändern und sich als Admin ausgeben
+- **Password Hashing**: Passwörter werden sicher gehasht (niemals im Klartext gespeichert)
+- **Admin-Zugriff**: Sensible Operationen (Benutzerverwaltung, Token-Konfiguration) sind nur für Admins zugänglich
 
 ### CORS
 
@@ -706,8 +722,8 @@ Required environment variables:
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `ENCRYPTION_SECRET` | Secret for encrypting tokens | ⚠️ Default | ✅ Yes |
-| `SESSION_SECRET` | Secret for session cookies | `change-me-in-production` | ✅ Yes |
+| `ENCRYPTION_SECRET` | Verschlüsselt GitLab/Artifactory-Tokens in app_config.json (schützt Tokens auf dem Server) | ⚠️ Default | ✅ Yes |
+| `SESSION_SECRET` | Signiert und verschlüsselt Login-Session-Cookies (verhindert Cookie-Manipulation) | `change-me-in-production` | ✅ Yes |
 | `BACKEND_URL` | Backend URL | `http://localhost:8000` | No |
 | `FRONTEND_URL` | Frontend URL (CORS) | `http://localhost:3000` | No |
 | `GITLAB_URL` | GitLab instance URL | `https://code.swisscom.com` | No* |

@@ -204,6 +204,27 @@ export default function ServiceEditor({
     onSave(validServices, jiraTicket || undefined, message || undefined);
   };
 
+  const handleCancel = () => {
+    // Reset to original services
+    const resetServices = services.map((s) => ({ name: s.name, version: s.version }));
+    setEditableServices(resetServices);
+
+    // Reset validation state
+    const resetValidation: ValidationState = {};
+    resetServices.forEach((_, index) => {
+      resetValidation[index] = {
+        isValidating: false,
+        isValid: true,
+      };
+    });
+    setValidationState(resetValidation);
+
+    // Reset form fields
+    setJiraTicket('');
+    setMessage('');
+    setSearchTerm('');
+  };
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -359,14 +380,23 @@ export default function ServiceEditor({
             </div>
           </div>
         </div>
-        <button
-          className="btn btn-save"
-          onClick={handleSave}
-          disabled={isSaving || editableServices.length === 0 || hasInvalidServices}
-          title={hasInvalidServices ? 'Please fix validation errors before saving' : ''}
-        >
-          {isSaving ? 'Creating Merge Request...' : 'Save & Create MR'}
-        </button>
+        <div className="editor-actions">
+          <button
+            className="btn btn-cancel"
+            onClick={handleCancel}
+            disabled={isSaving}
+          >
+            Abbrechen
+          </button>
+          <button
+            className="btn btn-save"
+            onClick={handleSave}
+            disabled={isSaving || editableServices.length === 0 || hasInvalidServices}
+            title={hasInvalidServices ? 'Please fix validation errors before saving' : ''}
+          >
+            {isSaving ? 'Creating Merge Request...' : 'Save & Create MR'}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -311,6 +311,20 @@
   transform: translateY(-3px);
 }
 
+.btn-cancel {
+  background: linear-gradient(135deg, #86868b 0%, #6e6e73 100%);
+  color: white;
+  padding: 1rem 3rem;
+  font-size: 1.0625rem;
+  box-shadow: 0 8px 24px rgba(134, 134, 139, 0.3);
+  font-weight: 700;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  box-shadow: 0 12px 32px rgba(134, 134, 139, 0.4);
+  transform: translateY(-3px);
+}
+
 .editor-footer {
   display: flex;
   flex-direction: column;
@@ -383,8 +397,11 @@
   color: #86868b;
 }
 
-.editor-footer .btn-save {
-  align-self: flex-end;
+.editor-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 @keyframes fadeIn {

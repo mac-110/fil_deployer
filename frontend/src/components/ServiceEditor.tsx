@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Service, ServiceUpdate } from '../types';
 import { servicesAPI } from '../services/api';
 import './ServiceEditor.css';
@@ -32,11 +32,13 @@ export default function ServiceEditor({
   const [jiraTicket, setJiraTicket] = useState('');
   const [message, setMessage] = useState('');
   const [validationState, setValidationState] = useState<ValidationState>({});
+  const [newServiceIndex, setNewServiceIndex] = useState<number | null>(null);
+  const inputRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
 
   useEffect(() => {
     const newServices = services.map((s) => ({ name: s.name, version: s.version }));
     setEditableServices(newServices);
-    
+
     // Initialize all existing services as valid (from original CSV)
     const initialValidation: ValidationState = {};
     newServices.forEach((_, index) => {
@@ -47,6 +49,16 @@ export default function ServiceEditor({
     });
     setValidationState(initialValidation);
   }, [services]);
+
+  // Auto-focus and scroll to newly added service
+  useEffect(() => {
+    if (newServiceIndex !== null && inputRefs.current[newServiceIndex]) {
+      const inputElement = inputRefs.current[newServiceIndex];
+      inputElement?.focus();
+      inputElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setNewServiceIndex(null);
+    }
+  }, [newServiceIndex, editableServices]);
 
   // Extract major version from version string (e.g., "6.0.1" -> "6", "3.0.1_03a54be" -> "3")
   const getMajorVersion = (version: string): string | null => {
@@ -164,6 +176,7 @@ export default function ServiceEditor({
       ...prev,
       [newIndex]: { isValidating: false, isValid: true }
     }));
+    setNewServiceIndex(newIndex);
   };
 
   const handleRemoveService = (index: number) => {
@@ -278,6 +291,7 @@ export default function ServiceEditor({
                       <div key={originalIndex} className={`table-row ${isInvalid ? 'invalid' : ''}`}>
                         <div className="col-name">
                           <input
+                            ref={(el) => (inputRefs.current[originalIndex] = el)}
                             type="text"
                             value={service.name}
                             onChange={(e) => handleServiceChange(originalIndex, 'name', e.target.value)}

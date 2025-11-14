@@ -66,17 +66,55 @@ Sensitive data (GitLab and Artifactory tokens) in `config/app_config.json` are a
 
 ### Encryption Key
 
-The encryption key is derived from a hardcoded secret using PBKDF2:
+The encryption key is derived from a secret using PBKDF2:
 
 ```python
 Secret → PBKDF2-HMAC-SHA256 (100k iterations) → Fernet Key
 ```
 
-**Important**: The secret is currently hardcoded in `crypto_utils.py`. For enhanced security in production:
+#### Configuration via Environment Variable
 
-1. Move secret to environment variable
-2. Use different keys per environment
-3. Consider using a key management service (KMS)
+The encryption secret can be configured via the `ENCRYPTION_SECRET` environment variable:
+
+**Method 1: Environment Variable (Recommended for Production)**
+```bash
+# Set in your environment
+export ENCRYPTION_SECRET="your-super-secret-encryption-key"
+
+# Or in .env file
+echo "ENCRYPTION_SECRET=your-super-secret-encryption-key" >> .env
+```
+
+**Method 2: Docker Compose**
+```yaml
+environment:
+  - ENCRYPTION_SECRET=${ENCRYPTION_SECRET}
+```
+
+**Generate a Strong Secret:**
+```bash
+# Generate a random 32-byte secret
+openssl rand -base64 32
+```
+
+#### Fallback Behavior
+
+If `ENCRYPTION_SECRET` is not set, the application will:
+1. ⚠️  Display a warning in logs
+2. Use a default secret (not recommended for production)
+
+**Always set a custom `ENCRYPTION_SECRET` in production!**
+
+#### Key Rotation
+
+To rotate encryption keys:
+
+1. **Export existing tokens** (they're encrypted with old key)
+2. **Set new `ENCRYPTION_SECRET`**
+3. **Re-enter tokens** via Settings UI (will encrypt with new key)
+4. **Restart application**
+
+⚠️ **Warning:** Changing `ENCRYPTION_SECRET` will make existing encrypted tokens unreadable!
 
 ### Example
 
@@ -120,19 +158,41 @@ No manual migration needed!
 
 ### Limitations
 
-⚠️ **Key Storage**: Encryption key is hardcoded (not ideal for production)
 ⚠️ **Not End-to-End**: Tokens are decrypted in application memory
 ⚠️ **Single Key**: All tokens use the same encryption key
+⚠️ **Key Rotation**: Changing encryption key requires re-entering all tokens
 
 ### Best Practices
 
 For production deployment:
 
-1. **Use Environment Variables**: Store encryption secret in `ENV` variable
-2. **Rotate Keys**: Implement key rotation strategy
-3. **Access Control**: Restrict file system access to `config/` directory
-4. **Secrets Management**: Consider HashiCorp Vault or AWS Secrets Manager
-5. **Audit Logging**: Log all token access/modifications
+1. **✅ Set `ENCRYPTION_SECRET`**: Always use a custom encryption secret via environment variable
+   ```bash
+   export ENCRYPTION_SECRET=$(openssl rand -base64 32)
+   ```
+
+2. **🔒 Keep Secret Secure**: Never commit `.env` file to git
+   ```bash
+   echo ".env" >> .gitignore
+   ```
+
+3. **🔄 Rotate Keys Periodically**: Implement key rotation strategy
+   - Backup existing tokens before rotation
+   - Set new `ENCRYPTION_SECRET`
+   - Re-enter all tokens via UI
+
+4. **📁 Access Control**: Restrict file system access to `config/` directory
+   ```bash
+   chmod 600 config/app_config.json
+   ```
+
+5. **🔐 Secrets Management**: For enterprise deployments, consider:
+   - HashiCorp Vault
+   - AWS Secrets Manager
+   - Azure Key Vault
+   - Google Cloud Secret Manager
+
+6. **📊 Audit Logging**: Log all token access/modifications (future enhancement)
 
 ### Testing Encryption
 

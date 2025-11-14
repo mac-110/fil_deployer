@@ -2,11 +2,12 @@
 Encryption and decryption utilities for sensitive data.
 
 Uses Fernet (symmetric encryption) from the cryptography library.
-The key is derived from a hardcoded secret using PBKDF2.
+The key is derived from a secret that can be configured via environment variable.
 """
 
 import base64
 import hashlib
+import os
 from cryptography.fernet import Fernet
 from typing import Optional
 
@@ -14,13 +15,23 @@ from typing import Optional
 class CryptoManager:
     """Handles encryption and decryption of sensitive data"""
 
-    # Hardcoded secret - In production, this should be environment variable
-    # This is intentionally hardcoded as requested by the user for simplicity
-    _SECRET_KEY = "FIL_DEPLOYER_ENCRYPTION_SECRET_2024_SWISSCOM_SECURE_KEY"
+    # Default secret - used as fallback if ENCRYPTION_SECRET is not set
+    # For production, ALWAYS set ENCRYPTION_SECRET environment variable!
+    _DEFAULT_SECRET = "FIL_DEPLOYER_ENCRYPTION_SECRET_2024_SWISSCOM_SECURE_KEY"
 
     def __init__(self):
         """Initialize the crypto manager with derived Fernet key"""
-        self._fernet_key = self._derive_fernet_key(self._SECRET_KEY)
+        # Get secret from environment variable, fallback to default
+        secret = os.getenv("ENCRYPTION_SECRET", self._DEFAULT_SECRET)
+
+        # Log warning if using default secret
+        if secret == self._DEFAULT_SECRET:
+            print("⚠️  WARNING: Using default encryption secret!")
+            print("   For production, set ENCRYPTION_SECRET environment variable.")
+        else:
+            print("✅ Using custom ENCRYPTION_SECRET from environment")
+
+        self._fernet_key = self._derive_fernet_key(secret)
         self._cipher = Fernet(self._fernet_key)
 
     @staticmethod

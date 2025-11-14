@@ -9,7 +9,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #f5f7fa;
-  overflow: hidden;
 }
 
 .app {
@@ -91,7 +90,7 @@ body {
 
 .app-main {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -101,10 +100,9 @@ body {
   margin: 0 auto;
   padding: 1.5rem 2rem;
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  min-height: 0;
 }
 
 .notification {

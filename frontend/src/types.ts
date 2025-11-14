@@ -31,6 +31,13 @@ export interface UserCreate {
   is_admin: boolean;
 }
 
+export interface UserUpdate {
+  password?: string;
+  full_name?: string;
+  email?: string;
+  is_admin?: boolean;
+}
+
 export interface LoginRequest {
   username: string;
   password: string;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Customer, Service, ServiceUpdate, UserInfo, SaveServicesResponse, LoginRequest, UserCreate, AppConfig } from '../types';
+import { Customer, Service, ServiceUpdate, UserInfo, SaveServicesResponse, LoginRequest, UserCreate, UserUpdate, AppConfig } from '../types';
 
 const api = axios.create({
   baseURL: '',
@@ -83,7 +83,7 @@ export const userAPI = {
     return response.data;
   },
   
-  updateUser: async (username: string, updates: any): Promise<UserInfo> => {
+  updateUser: async (username: string, updates: UserUpdate): Promise<UserInfo> => {
     const response = await api.put(`/api/users/${username}`, updates);
     return response.data;
   },

@@ -106,117 +106,118 @@ export default function ConfigPanel() {
 
   return (
     <div className="config-panel">
-      <div className="config-header">
-        <h2>Customer Configuration</h2>
-        <div className="config-header-actions">
-          <div className="mode-toggle">
+      <div className="config-header-sticky">
+        <div className="config-header">
+          <h2>Customer Configuration</h2>
+          <div className="config-header-actions">
             <button
-              className={`btn btn-mode ${editorMode === 'ui' ? 'active' : ''}`}
-              onClick={() => handleModeSwitch('ui')}
+              className="btn btn-secondary"
+              onClick={() => {
+                setIsEditing(false);
+                loadConfig();
+              }}
+              disabled={isSaving}
             >
-              UI Editor
+              Cancel
             </button>
             <button
-              className={`btn btn-mode ${editorMode === 'json' ? 'active' : ''}`}
-              onClick={() => handleModeSwitch('json')}
+              className="btn btn-primary"
+              onClick={handleSave}
+              disabled={isSaving}
             >
-              JSON Editor
+              {isSaving ? 'Saving...' : 'Save Configuration'}
             </button>
-          </div>
-          {editorMode === 'ui' && (
-            <button className="btn btn-add" onClick={handleAddCustomer}>
-              + Add Customer
-            </button>
-          )}
-        </div>
-      </div>
-
-      {message && <div className="message">{message}</div>}
-
-      {editorMode === 'ui' ? (
-        <div className="config-list">
-          {customers.map((customer, index) => (
-            <div key={index} className="config-item">
-              <div className="config-row">
-                <label>ID</label>
-                <input
-                  type="text"
-                  value={customer.id}
-                  onChange={(e) => handleCustomerChange(index, 'id', e.target.value)}
-                  placeholder="e.g., bcv"
-                />
-              </div>
-              <div className="config-row">
-                <label>Name</label>
-                <input
-                  type="text"
-                  value={customer.name}
-                  onChange={(e) => handleCustomerChange(index, 'name', e.target.value)}
-                  placeholder="e.g., BCV"
-                />
-              </div>
-              <div className="config-row">
-                <label>Repository URL</label>
-                <input
-                  type="text"
-                  value={customer.repo_url}
-                  onChange={(e) => handleCustomerChange(index, 'repo_url', e.target.value)}
-                  placeholder="https://code.swisscom.com/..."
-                />
-              </div>
-              <div className="config-row">
-                <label>Stages (comma-separated)</label>
-                <input
-                  type="text"
-                  value={customer.stages.join(', ')}
-                  onChange={(e) =>
-                    handleCustomerChange(
-                      index,
-                      'stages',
-                      e.target.value.split(',').map((s) => s.trim())
-                    )
-                  }
-                  placeholder="dev, tst, prd"
-                />
-              </div>
+            <div className="mode-toggle">
               <button
-                className="btn btn-remove"
-                onClick={() => handleRemoveCustomer(index)}
+                className={`btn btn-mode ${editorMode === 'ui' ? 'active' : ''}`}
+                onClick={() => handleModeSwitch('ui')}
               >
-                Remove Customer
+                UI Editor
+              </button>
+              <button
+                className={`btn btn-mode ${editorMode === 'json' ? 'active' : ''}`}
+                onClick={() => handleModeSwitch('json')}
+              >
+                JSON Editor
               </button>
             </div>
-          ))}
+            {editorMode === 'ui' && (
+              <button className="btn btn-add" onClick={handleAddCustomer}>
+                + Add Customer
+              </button>
+            )}
+          </div>
         </div>
-      ) : (
-        <div className="json-editor">
-          <textarea
-            value={jsonValue}
-            onChange={(e) => setJsonValue(e.target.value)}
-            placeholder="Enter JSON configuration..."
-            spellCheck={false}
-          />
-        </div>
-      )}
 
-      <div className="config-footer">
-        <button
-          className="btn btn-secondary"
-          onClick={() => {
-            setIsEditing(false);
-            loadConfig();
-          }}
-          disabled={isSaving}
-        >
-          Cancel
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={handleSave}
-          disabled={isSaving}
-        >
-          {isSaving ? 'Saving...' : 'Save Configuration'}
-        </button>
+        {message && <div className="message">{message}</div>}
+      </div>
+
+      <div className="config-content">
+        {editorMode === 'ui' ? (
+          <div className="config-list">
+            {customers.map((customer, index) => (
+              <div key={index} className="config-item">
+                <div className="config-row">
+                  <label>ID</label>
+                  <input
+                    type="text"
+                    value={customer.id}
+                    onChange={(e) => handleCustomerChange(index, 'id', e.target.value)}
+                    placeholder="e.g., bcv"
+                  />
+                </div>
+                <div className="config-row">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    value={customer.name}
+                    onChange={(e) => handleCustomerChange(index, 'name', e.target.value)}
+                    placeholder="e.g., BCV"
+                  />
+                </div>
+                <div className="config-row">
+                  <label>Repository URL</label>
+                  <input
+                    type="text"
+                    value={customer.repo_url}
+                    onChange={(e) => handleCustomerChange(index, 'repo_url', e.target.value)}
+                    placeholder="https://code.swisscom.com/..."
+                  />
+                </div>
+                <div className="config-row">
+                  <label>Stages (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={customer.stages.join(', ')}
+                    onChange={(e) =>
+                      handleCustomerChange(
+                        index,
+                        'stages',
+                        e.target.value.split(',').map((s) => s.trim())
+                      )
+                    }
+                    placeholder="dev, tst, prd"
+                  />
+                </div>
+                <button
+                  className="btn btn-remove"
+                  onClick={() => handleRemoveCustomer(index)}
+                >
+                  Remove Customer
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="json-editor">
+            <textarea
+              value={jsonValue}
+              onChange={(e) => setJsonValue(e.target.value)}
+              placeholder="Enter JSON configuration..."
+              spellCheck={false}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

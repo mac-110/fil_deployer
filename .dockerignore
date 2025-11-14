@@ -1,0 +1,12 @@
+node_modules
+__pycache__
+*.pyc
+.git
+.DS_Store
+.env
+config/customers.json
+dist
+build
+.vscode
+.idea
+

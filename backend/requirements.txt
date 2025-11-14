@@ -1,0 +1,10 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+pydantic==2.5.0
+python-gitlab==4.2.0
+GitPython==3.1.40
+httpx==0.25.1
+requests==2.31.0
+itsdangerous==2.1.2
+

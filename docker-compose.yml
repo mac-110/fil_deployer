@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  fil-deployer:
+    build: .
+    ports:
+      - "8081:80"
+    environment:
+      - GITLAB_URL=https://code.swisscom.com
+      - GITLAB_CLIENT_ID=${GITLAB_CLIENT_ID}
+      - GITLAB_CLIENT_SECRET=${GITLAB_CLIENT_SECRET}
+      - GITLAB_GROUP_TOKEN=${GITLAB_GROUP_TOKEN}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - BACKEND_URL=http://localhost:8080
+      - FRONTEND_URL=http://localhost:8080
+      - CONFIG_FILE=/app/config/customers.json
+      - GIT_CACHE_DIR=/tmp/fil-deployer-repos
+    volumes:
+      - ./config:/app/config
+      - git-cache:/tmp/fil-deployer-repos
+    restart: unless-stopped
+
+volumes:
+  git-cache:
+

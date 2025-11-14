@@ -1,0 +1,17 @@
+{
+  "customers": [
+    {
+      "id": "bcv",
+      "name": "BCV",
+      "repo_url": "https://code.swisscom.com/your-group/bcv-kpt-sif.git",
+      "stages": ["dev", "tst", "prd"]
+    },
+    {
+      "id": "customer2",
+      "name": "Customer 2",
+      "repo_url": "https://code.swisscom.com/your-group/customer2-kpt-sif.git",
+      "stages": ["dev", "tst", "prd", "ido"]
+    }
+  ]
+}
+

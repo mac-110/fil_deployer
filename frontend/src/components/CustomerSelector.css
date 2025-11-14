@@ -1,0 +1,49 @@
+.selector-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-shrink: 0;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.selector-group label {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+}
+
+.selector-group select {
+  padding: 0.875rem 1rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.selector-group select:focus {
+  outline: none;
+  border-color: #0052A5;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(0, 82, 165, 0.1);
+}
+
+.selector-group select:hover {
+  border-color: #0052A5;
+  background: white;
+}
+

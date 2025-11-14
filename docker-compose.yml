@@ -6,6 +6,7 @@ services:
     ports:
       - "8081:80"
     environment:
+      - ENCRYPTION_SECRET=${ENCRYPTION_SECRET:-your-default-encryption-secret-change-in-production}
       - GITLAB_URL=https://code.swisscom.com
       - GITLAB_CLIENT_ID=${GITLAB_CLIENT_ID}
       - GITLAB_CLIENT_SECRET=${GITLAB_CLIENT_SECRET}

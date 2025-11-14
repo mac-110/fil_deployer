@@ -20,6 +20,44 @@
   letter-spacing: -0.04em;
 }
 
+.config-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.btn-mode {
+  padding: 0.625rem 1.25rem;
+  border: none;
+  background: transparent;
+  color: #86868b;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-mode.active {
+  background: linear-gradient(135deg, #0052A5 0%, #003d7a 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 82, 165, 0.25);
+}
+
+.btn-mode:hover:not(.active) {
+  color: #0052A5;
+  background: rgba(0, 82, 165, 0.08);
+}
+
 .config-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
@@ -104,6 +142,41 @@
 
 .config-row input::placeholder {
   color: #86868b;
+}
+
+.json-editor {
+  margin-bottom: 2rem;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.json-editor textarea {
+  width: 100%;
+  min-height: 500px;
+  padding: 1.5rem;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  resize: vertical;
+  color: #1d1d1f;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.json-editor textarea:focus {
+  outline: none;
+  border-color: #0052A5;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 82, 165, 0.08), 0 8px 32px rgba(0, 82, 165, 0.12);
+}
+
+.json-editor textarea:hover:not(:focus) {
+  border-color: rgba(0, 82, 165, 0.3);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .config-footer {

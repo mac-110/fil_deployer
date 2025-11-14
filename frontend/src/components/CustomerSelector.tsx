@@ -19,6 +19,11 @@ export default function CustomerSelector({
   const customer = customers.find((c) => c.id === selectedCustomer);
   const stages = customer?.stages || [];
 
+  // Sort customers alphabetically by name
+  const sortedCustomers = [...customers].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
   return (
     <div className="selector-container">
       <div className="selector-group">
@@ -29,7 +34,7 @@ export default function CustomerSelector({
           onChange={(e) => onCustomerChange(e.target.value)}
         >
           <option value="">Select a customer...</option>
-          {customers.map((customer) => (
+          {sortedCustomers.map((customer) => (
             <option key={customer.id} value={customer.id}>
               {customer.name}
             </option>

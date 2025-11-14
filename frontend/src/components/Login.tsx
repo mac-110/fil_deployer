@@ -61,18 +61,14 @@ export default function Login({ onLoginSuccess }: LoginProps) {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="login-button"
             disabled={isLoading}
           >
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
-        <div className="login-hint">
-          Default credentials: admin / admin
-        </div>
       </div>
     </div>
   );
